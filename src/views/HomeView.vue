@@ -2,6 +2,9 @@
 import CTextArea from '@/components/CTextArea.vue';
 import CTextField from '@/components/CTextField.vue';
 import CCard from '@/components/CCard.vue';
+import CButton from '@/components/CButton.vue';
+import PencilIcon from "@/components/icons/PencilIcon.vue"
+import TrashIcon from "@/components/icons/TrashIcon.vue"
 
 import type { Users, Posts } from "../types"
 
@@ -13,16 +16,22 @@ const users = ref<Users>([])
 axios.get("https://jsonplaceholder.typicode.com/users").then(res => {
   if (res.statusText === "OK") {
     users.value = res.data
+    sessionStorage.setItem("users", JSON.stringify(users.value))
   }
 })
+
 
 const posts = ref<Posts>([])
-
-axios.get("https://jsonplaceholder.typicode.com/posts").then(res => {
-  if (res.statusText === "OK") {
-    posts.value = res.data
-  }
-})
+if (!sessionStorage.getItem("posts")) {
+  axios.get("https://jsonplaceholder.typicode.com/posts").then(res => {
+    if (res.statusText === "OK") {
+      posts.value = res.data
+      sessionStorage.setItem("posts", JSON.stringify(posts.value))
+    }
+  })
+} else {
+  posts.value = JSON.parse(sessionStorage.getItem("posts")!)
+}
 
 const postsWithUser = computed(() => {
   return posts.value.map((post) => {
@@ -38,6 +47,23 @@ const postsWithUser = computed(() => {
   })
 })
 
+const defaultPost = {
+  userId: 1,
+  title: "",
+  body: ""
+}
+
+const editedPost = ref(defaultPost)
+
+function createPost() {
+  axios.post("https://jsonplaceholder.typicode.com/posts", editedPost.value).then(res => {
+    if (res.statusText === "Created") {
+      posts.value.unshift(res.data)
+      sessionStorage.setItem("posts", JSON.stringify(posts.value))
+    }
+  })
+}
+
 </script>
 
 <template>
@@ -46,13 +72,29 @@ const postsWithUser = computed(() => {
     <CCard>
       <h1 class="text-2xl pb-3">Create new post</h1>
       <div>
-        <CTextField label="Title"></CTextField>
-        <CTextArea label="Content"></CTextArea>
+        <div class="pb-2">
+          <CTextField label="Title" v-model="editedPost.title"></CTextField>
+          <CTextArea label="Content" v-model="editedPost.body"></CTextArea>
+        </div>
+        <div class="flex justify-end">
+          <CButton @click="createPost()"> Post </CButton>
+        </div>
       </div>
     </CCard>
     <!-- Posts -->
     <CCard v-for="post of postsWithUser" :key="post?.id">
-      <h3 class="pb-3 font-semibold">{{ post?.posterName }}</h3>
+      <div class="flex items-start">
+        <h3 class="pb-3 font-semibold">{{ post?.posterName }}</h3>
+        <div class="flex-1"></div>
+        <div>
+          <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
+            <PencilIcon class="w-6"></PencilIcon>
+          </button>
+          <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
+            <TrashIcon class="w-6"></TrashIcon>
+          </button>
+        </div>
+      </div>
       <h2 class="pb-1 text-xl capitalize"> {{ post?.title }}</h2>
       <p> {{ post?.body }}</p>
     </CCard>
