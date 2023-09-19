@@ -55,13 +55,42 @@ const defaultPost = {
 
 const editedPost = ref(defaultPost)
 
-function createPost() {
-  axios.post("https://jsonplaceholder.typicode.com/posts", editedPost.value).then(res => {
-    if (res.statusText === "Created") {
-      posts.value.unshift(res.data)
+function savePost() {
+  if (editedPost.value.title && editedPost.value.body) {
+    if (editedIndex.value > -1) {
+      //edit function
+      posts.value.splice(editedIndex.value, 1, { ...editedPost.value, id: posts.value[editedIndex.value].id })
       sessionStorage.setItem("posts", JSON.stringify(posts.value))
+      editedPost.value = defaultPost
+      editedIndex.value = -1
+      alert("Post updated!")
     }
-  })
+    else {
+      // add function
+      axios.post("https://jsonplaceholder.typicode.com/posts", editedPost.value).then(res => {
+        if (res.statusText === "Created") {
+          posts.value.unshift(res.data)
+          sessionStorage.setItem("posts", JSON.stringify(posts.value))
+          editedPost.value = defaultPost
+          editedIndex.value = -1
+          alert("Post created!")
+        }
+      })
+    }
+  } else {
+    alert("Please add title and content")
+  }
+}
+
+const editedIndex = ref(-1)
+
+function editPost(id: number | undefined) {
+  if (id) {
+    editedIndex.value = posts.value.findIndex((post) => {
+      return post.id === id
+    })
+    editedPost.value = { ...posts.value[editedIndex.value] }
+  }
 }
 
 </script>
@@ -70,16 +99,17 @@ function createPost() {
   <div>
     <!-- Create new post -->
     <CCard>
-      <h1 class="text-2xl pb-3">Create new post</h1>
+      <h1 class="text-2xl pb-3">{{ editedIndex > -1 ? "Edit" : "Create new" }} post</h1>
       <div>
         <div class="pb-2">
           <CTextField label="Title" v-model="editedPost.title"></CTextField>
           <CTextArea label="Content" v-model="editedPost.body"></CTextArea>
         </div>
         <div class="flex justify-end">
-          <CButton @click="createPost()"> Post </CButton>
+          <CButton @click="savePost()"> Post </CButton>
         </div>
       </div>
+
     </CCard>
     <!-- Posts -->
     <CCard v-for="post of postsWithUser" :key="post?.id">
@@ -88,7 +118,7 @@ function createPost() {
         <div class="flex-1"></div>
         <div>
           <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
-            <PencilIcon class="w-6"></PencilIcon>
+            <PencilIcon @click="editPost(post?.id)" class="w-6"></PencilIcon>
           </button>
           <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
             <TrashIcon class="w-6"></TrashIcon>
@@ -96,7 +126,7 @@ function createPost() {
         </div>
       </div>
       <h2 class="pb-1 text-xl capitalize"> {{ post?.title }}</h2>
-      <p> {{ post?.body }}</p>
+      <pre class="font-sans">{{ post?.body }}</pre>
     </CCard>
   </div>
 </template>
