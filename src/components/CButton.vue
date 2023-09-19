@@ -1,6 +1,6 @@
 <template>
-    <button class="py-2 px-4 rounded-md focus:outline-none focus:ring focus:ring-blue-500
-        bg-blue-500 text-white hover:bg-blue-600">
+    <button class="py-2 px-4 rounded-md focus:outline-none border-2 border-black 
+        bg-white hover:bg-gray-200 active:bg-gray-500">
         <slot></slot>
     </button>
 </template>

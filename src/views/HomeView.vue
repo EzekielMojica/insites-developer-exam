@@ -123,21 +123,23 @@ function deletePost(id: number | undefined) {
 
     </CCard>
     <!-- Posts -->
-    <CCard v-for="post of postsWithUser" :key="post?.id">
-      <div class="flex items-start">
-        <h3 class="pb-3 font-semibold">{{ post?.posterName }}</h3>
-        <div class="flex-1"></div>
-        <div>
-          <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
-            <PencilIcon @click="editPost(post?.id)" class="w-6"></PencilIcon>
-          </button>
-          <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
-            <TrashIcon @click="deletePost(post?.id)" class="w-6"></TrashIcon>
-          </button>
+    <div class="pb-3">
+      <CCard v-for="post of postsWithUser" :key="post?.id">
+        <div class="flex items-start">
+          <h3 class="pb-3 font-semibold">{{ post?.posterName }}</h3>
+          <div class="flex-1"></div>
+          <div>
+            <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
+              <PencilIcon @click="editPost(post?.id)" class="w-6"></PencilIcon>
+            </button>
+            <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
+              <TrashIcon @click="deletePost(post?.id)" class="w-6"></TrashIcon>
+            </button>
+          </div>
         </div>
-      </div>
-      <h2 class="pb-1 text-xl capitalize"> {{ post?.title }}</h2>
-      <pre class="font-sans">{{ post?.body }}</pre>
-    </CCard>
+        <h2 class="pb-1 text-xl capitalize"> {{ post?.title }}</h2>
+        <pre class="font-sans">{{ post?.body }}</pre>
+      </CCard>
+    </div>
   </div>
 </template>

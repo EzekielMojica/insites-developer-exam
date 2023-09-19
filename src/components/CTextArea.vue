@@ -4,7 +4,7 @@
             {{ label }}
         </label>
         <textarea :id="id" :value="modelValue" :placeholder="placeholder" rows="4"
-            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+            class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-gray-500"
             @input="updateModelValue($event.target as HTMLTextAreaElement)">
         </textarea>
     </div>
