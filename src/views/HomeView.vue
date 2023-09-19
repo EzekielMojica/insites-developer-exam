@@ -53,7 +53,7 @@ const defaultPost = {
   body: ""
 }
 
-const editedPost = ref(defaultPost)
+const editedPost = ref({ ...defaultPost })
 
 function savePost() {
   if (editedPost.value.title && editedPost.value.body) {
@@ -67,18 +67,14 @@ function savePost() {
     }
     else {
       // add function
-      axios.post("https://jsonplaceholder.typicode.com/posts", editedPost.value).then(res => {
-        if (res.statusText === "Created") {
-          posts.value.unshift(res.data)
-          sessionStorage.setItem("posts", JSON.stringify(posts.value))
-          editedPost.value = defaultPost
-          editedIndex.value = -1
-          alert("Post created!")
-        }
-      })
+      posts.value.unshift({ ...editedPost.value, id: posts.value.length + 1 })
+      sessionStorage.setItem("posts", JSON.stringify(posts.value))
+      editedPost.value = defaultPost
+      editedIndex.value = -1
+      alert("Post created!")
     }
   } else {
-    alert("Please add title and content")
+    alert("Please add title and content!")
   }
 }
 
@@ -90,6 +86,21 @@ function editPost(id: number | undefined) {
       return post.id === id
     })
     editedPost.value = { ...posts.value[editedIndex.value] }
+  }
+}
+
+function deletePost(id: number | undefined) {
+  if (id) {
+    if (confirm("Are you sure you want to delete this post?")) {
+      const index = posts.value.findIndex((post) => {
+        return post.id === id
+      })
+      posts.value.splice(index, 1)
+      sessionStorage.setItem("posts", JSON.stringify(posts.value))
+      editedPost.value = defaultPost
+      editedIndex.value = -1
+      alert("Post deleted!")
+    }
   }
 }
 
@@ -121,7 +132,7 @@ function editPost(id: number | undefined) {
             <PencilIcon @click="editPost(post?.id)" class="w-6"></PencilIcon>
           </button>
           <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
-            <TrashIcon class="w-6"></TrashIcon>
+            <TrashIcon @click="deletePost(post?.id)" class="w-6"></TrashIcon>
           </button>
         </div>
       </div>
