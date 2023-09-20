@@ -185,10 +185,14 @@ function preview(slug: string | null) {
         <div class="pb-2">
           <CTextField label="Title" v-model="editedPost.title"></CTextField>
           <CTextArea label="Content" v-model="editedPost.body"></CTextArea>
-          <CAutoComplete v-model="editedPost.status">
+          <CAutoComplete label="Status" v-model="editedPost.status">
             <option value="Published">Published</option>
             <option value="Unpublished">Unpublished</option>
           </CAutoComplete>
+          <CTextField
+            label="Banner Image Link"
+            v-model="editedPost.bannerImg"
+          ></CTextField>
         </div>
         <div class="flex justify-end">
           <CButton @click="savePost()"> Post </CButton>
@@ -199,6 +203,15 @@ function preview(slug: string | null) {
     <div class="pb-3">
       <CCard>
         <CTable :items="postsWithUser" :headers="postsHeaders">
+          <template #item-bannerImg="{ item }">
+            <div>
+              <img
+                v-if="item?.bannerImg"
+                :src="item?.bannerImg"
+                :alt="item?.title + ' banner'"
+              />
+            </div>
+          </template>
           <template #item-actions="{ item }">
             <div>
               <button
