@@ -3,6 +3,7 @@ import CTextArea from '@/components/CTextArea.vue';
 import CTextField from '@/components/CTextField.vue';
 import CCard from '@/components/CCard.vue';
 import CButton from '@/components/CButton.vue';
+import CTable from '@/components/CTable.vue';
 import PencilIcon from "@/components/icons/PencilIcon.vue"
 import TrashIcon from "@/components/icons/TrashIcon.vue"
 
@@ -104,6 +105,14 @@ function deletePost(id: number | undefined) {
   }
 }
 
+const postsHeaders = [
+  { text: "ID", value: "id" },
+  { text: "User ID", value: "userId" },
+  { text: "Title", value: "title" },
+  { text: "Content", value: "body" },
+  { text: "Actions", value: "actions" }
+]
+
 </script>
 
 <template>
@@ -124,21 +133,19 @@ function deletePost(id: number | undefined) {
     </CCard>
     <!-- Posts -->
     <div class="pb-3">
-      <CCard v-for="post of postsWithUser" :key="post?.id">
-        <div class="flex items-start">
-          <h3 class="pb-3 font-semibold">{{ post?.posterName }}</h3>
-          <div class="flex-1"></div>
-          <div>
-            <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
-              <PencilIcon @click="editPost(post?.id)" class="w-6"></PencilIcon>
-            </button>
-            <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
-              <TrashIcon @click="deletePost(post?.id)" class="w-6"></TrashIcon>
-            </button>
-          </div>
-        </div>
-        <h2 class="pb-1 text-xl capitalize"> {{ post?.title }}</h2>
-        <pre class="font-sans">{{ post?.body }}</pre>
+      <CCard>
+        <CTable :items="postsWithUser" :headers="postsHeaders">
+          <template #item-actions="{ item }">
+            <div>
+              <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
+                <PencilIcon @click="editPost(item?.id)" class="w-6"></PencilIcon>
+              </button>
+              <button class="hover:bg-gray-100 active:bg-gray-300 p-1 rounded-lg">
+                <TrashIcon @click="deletePost(item?.id)" class="w-6"></TrashIcon>
+              </button>
+            </div>
+          </template>
+        </CTable>
       </CCard>
     </div>
   </div>
