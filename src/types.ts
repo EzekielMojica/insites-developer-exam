@@ -8,6 +8,9 @@ type Post = {
   id: number;
   title: string;
   body: string;
+  pageSlug: string;
+  bannerImg: string;
+  status: "Published" | "Unpublished";
 };
 
 type Users = User[];
