@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from "vue-router";
 </script>
 
 <template>
-  <div class="bg-gray-100">
+  <div class="bg-gray-100 min-h-screen">
     <header class="bg-black p-4">
-      <nav class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+      <nav
+        class="container mx-auto flex flex-col md:flex-row items-center justify-between"
+      >
         <!-- logo -->
         <h1 class="text-2xl font-bold text-white mb-4 md:mb-0 font-serif">Y</h1>
         <div class="flex space-x-4">
-          <RouterLink to="/" class="text-white hover:text-gray-200">Home</RouterLink>
+          <RouterLink to="/" class="text-white hover:text-gray-200"
+            >Home</RouterLink
+          >
         </div>
       </nav>
     </header>
@@ -18,4 +22,3 @@ import { RouterLink, RouterView } from 'vue-router'
     </main>
   </div>
 </template>
-

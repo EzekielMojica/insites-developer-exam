@@ -80,7 +80,13 @@ const defaultPost: {
 const editedPost = ref({ ...defaultPost });
 
 function savePost() {
-  if (editedPost.value.title && editedPost.value.body) {
+  const titleIsUnique =
+    posts.value.findIndex(
+      (post) =>
+        post.title.toLowerCase() === editedPost.value.title.toLowerCase()
+    ) === editedIndex.value;
+
+  if (editedPost.value.title && editedPost.value.body && titleIsUnique) {
     if (editedIndex.value > -1) {
       //edit function
       editedPost.value.pageSlug = toKebabCase(editedPost.value.title);
@@ -102,7 +108,11 @@ function savePost() {
       alert("Post created!");
     }
   } else {
-    alert("Please add title and content!");
+    if (!titleIsUnique) {
+      alert("Title must be unique");
+    } else {
+      alert("Please check the title and content!");
+    }
   }
 }
 
@@ -169,7 +179,8 @@ const router = useRouter();
 
 function preview(slug: string | null) {
   if (slug) {
-    router.push("/post/" + slug);
+    const routeData = router.resolve("/post/" + slug);
+    window.open(routeData.href, "_blank");
   }
 }
 </script>
